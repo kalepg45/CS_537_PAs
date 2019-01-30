@@ -1,0 +1,28 @@
+<!-- banner -->
+    <div class="banner">
+        <div class="container">
+            <h1>Practical Assignment 0</h1>
+            <h2>Atbash Cipher</h2>
+        </div>
+    </div>
+
+<!-- Middle content section -->
+    <div class="middle">
+        <div class="container" ng-controller="PA0_controller">
+            <table>
+                <tr>
+                    <td><textarea ng-model="plaintext" ng-change="plaintext_change()" placeholder="Plaintext"></textarea></td>
+                    <td><textarea ng-model="ciphertext" ng-change="ciphertext_change()" placeholder="Ciphertext"></textarea></td>
+                </tr>
+            </table>
+            <p>The Atbash Cipher was originally a monoalphabetic substitution cipher used for the Hebrew alphabet. It is one of the earliest known subtitution ciphers to have been used, and is very simple.</p>
+            <img src="https://fearlessmen.com/wp-content/uploads/2012/11/atbash.jpg"/>
+            <p> The Atbash Cipher simply reverses the plaintext alphabet to create the ciphertext alphabet. That is, the first letter of the alphabet is encrypted to the last letter of the alphabet, the second letter to the penultimate letter and so forth.</p>
+            <h3>Encryption</h3>
+            <p>As with any monoalphabetic substitution cipher, encryption using the Atbash Cipher is very simple once the ciphertext alphabet has been generated. We simply replace each occurence of each plaintext letter with the respective ciphertext letter given by the table. So, if we take the plaintext "atbash", we can see that "a" enciphers to "Z", "t" enciphers to "G" and so on. Continuing in this way, we see that the final ciphertext is "ZGYZHS".</p>
+            <h3>Decryption</h3>
+            <p>Due to the symmetric nature of this cipher, the decryption process is exactly the same as the encryption process. Thus, for the recipient to decrypt the ciphertext, the same ciphertext alphabet must be generated as was used to encrypt the message in the first place. In this case, the ciphertext alphabet relies only on the alphabet used, and hence the table above is also used to decipher the message. So, given the ciphertext "XRKSVI", and assuming that the alphabet used was the standard Roman alphabet of 26 letters, we can retrieve the plaintext "cipher".</p>
+            <p>The Atbash Cipher is a very weak substitution cipher, since there is no secret key behind generating the ciphertext alphabet to perform the encryption. Thus, given a piece of ciphertext, known to have been enciphered using the Atbash Cipher, anyone who intercepts the message can easily decipher it to retrieve what was meant to be concealed.</p>
+            <p>Despite this, it provides a very quick and easy way to conceal messages from an onlooker and can be used successfully to encipher messages of not great importance.</p>
+        </div>
+    </div>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CS-537 | Network Security</title>
+    <!-- bootstrap CSS -->
+    <link href="includes/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="includes/style.css" rel="stylesheet">
+    <script src="includes/jquery/jquery-2.1.0.min.js"></script>
+    <!--Angular js-->
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-route.min.js"></script>
+    <script src="js/angular-animate.min.js"></script>
+    <script src="js/app.js"></script>
+    <!-- jQuery and bootstrap JS plugins -->
+    <script src="includes/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body ng-controller="navController">
+    <header class="top" role="header">
+    </header>
+    <div>
+        <div class="container">
+            <a href="#" class="navbar-brand pull-left">CS-537</a>
+            <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="glyphicon glyphicon-align-justify"></span>
+            </button>
+            <nav class="navbar-collapse collapse" role="navigation">
+                <ul class="navbar-nav nav">
+                    <li><a href="#PA0">PA0</a></li>
+                    <li><a href="#PA1">PA1</a></li>
+                    <li><a href="#PA2">PA2</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+    
+    <div ng-view="" id="ng-view" class="slide-animation"></div>
+
+    <!-- Middle content section -->
+    <!-- <div class="middle">
+        <div class="container">
+            <div class="col-md-9 content">
+                <h2>CS-537</h2>
+                <h3>Network Security</h3>
+            </div>
+        </div>
+    </div> -->
+</body>
+</html>
