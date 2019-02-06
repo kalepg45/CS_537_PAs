@@ -191,3 +191,10 @@ td{
   background-color: #007299;
   color: white;
 }
+
+#cipher_table td:nth-child(even){
+    border: 1px solid;
+}
+#cipher_table td:nth-child(odd){
+    font-weight: bold;
+}

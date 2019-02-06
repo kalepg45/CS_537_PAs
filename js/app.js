@@ -199,8 +199,201 @@ app.controller('PA1_controller',function($scope){
   }
 
   /* DES Encryption */
-  
-  
+  $scope.num_of_rounds = 20;
+  $scope.des_key = "";
+  $scope.des_ciphertext = "";
+  $scope.key_space = [""];
+  $scope.round_text = [];
+  // Utilities
+  $scope.hex_2_binary = function(p){
+    var c = "";
+    for(var i=0;i<p.length;i++){
+      var d = parseInt(p[i],16).toString(2);
+      d = Array(4 - d.length + 1).join("0") + d;
+      c += d;
+    }
+    return c;
+  }
+  $scope.binary_2_hex = function(p){
+    var d = p.match(/.{1,4}/g).join(" ").split(" ");
+    var c = "";
+    for(var i=0;i<d.length;i++)
+      c += parseInt(d[i],2).toString(16);
+    return c;
+  }
+  $scope.binary_2_dec = function(p){
+    return parseInt(p,2);
+  }
+  $scope.dec_2_binary = function(x,l){
+    var c = x.toString(2);
+    c = Array(l - c.length + 1).join("0") + c;
+    return c;
+  }
+  $scope.xor = function(p,q){
+    var c = "";
+    for(var i=0;i<p.length;i++){
+      if(p[i]===q[i])
+        c += '0';
+      else
+        c += '1';
+    }
+    return c;
+  }
+  $scope.check_hex = function(p, d){
+    if(d==1){
+      if(p.length%16!=0)
+        return 0;
+    }
+    for(var i=0;i<p.length;i++){
+      if(isNaN(parseInt(p[i],16)))
+        return 0;
+    }
+    return 1;
+  }
+  $scope.ascii_2_binary = function(p){
+    var c = "";
+    for(var i=0;i<p.length;i++){
+      var x = p.charCodeAt(i);
+      x = $scope.dec_2_binary(x, 8);
+      c += x;
+    }
+    return c;
+  }
+  $scope.binary_2_ascii = function(p){
+    var d = p.match(/.{1,8}/g).join(" ").split(" ");
+    var c = "";
+    for(var i=0;i<d.length;i++){
+      var x = $scope.binary_2_dec(d[i]);
+      c += String.fromCharCode(x);
+    }
+    return c;
+  }
+
+  // Key Generation Functions 
+  $scope.PC_1 = [57,49,41,33,25,17,9,1,58,50,42,34,26,18,10,2,59,51,43,35,27,19,11,3,60,52,44,36,63,55,47,39,31,23,15,7,62,54,46,38,30,22,14,6,61,53,45,37,29,21,13,5,28,20,12,4];
+  $scope.PC_2 = [14,17,11,24,1,5,3,28,15,6,21,10,23,19,12,4,26,8,16,7,27,20,13,2,41,52,31,37,47,55,30,40,51,45,33,48,44,49,39,56,34,53,46,42,50,36,29,32];
+  $scope.LCS = [0,1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1,2,2,2,2];
+  $scope.left_circular_shift_util = function(key, k){
+    var temp = key.substr(0,k);
+    key = key.substr(k,key.length-k);
+    key += temp;
+    return key;
+  }
+  $scope.permuted_choice_1 = function(key){
+    var c = "";
+    for(var i=0;i<$scope.PC_1.length;i++)
+      c += key[$scope.PC_1[i]-1];
+    return c;
+  }
+  $scope.left_circular_shift = function(key, r){
+    var k = $scope.LCS[r];
+    var d = key.match(/.{1,28}/g).join(" ").split(" ");
+    var key_l = d[0];
+    var key_r = d[1];
+    key_l = $scope.left_circular_shift_util(key_l, k);
+    key_r = $scope.left_circular_shift_util(key_r, k);
+    key = key_l + key_r;
+    return key;
+  }
+  $scope.permuted_choice_2 = function(key){
+    var c = "";
+    for(var i=0;i<$scope.PC_2.length;i++)
+      c += key[$scope.PC_2[i]-1];
+    return c;
+  }
+
+  // Round Functions
+  $scope.IP = [58,50,42,34,26,18,10,2,60,52,44,36,28,20,12,4,62,54,46,38,30,22,14,6,64,56,48,40,32,24,16,8,57,49,41,33,25,17,9,1,59,51,43,35,27,19,11,3,61,53,45,37,29,21,13,5,63,55,47,39,31,23,15,7];
+  $scope.E = [32,1,2,3,4,5,4,5,6,7,8,9,8,9,10,11,12,13,12,13,14,15,16,17,16,17,18,19,20,21,20,21,22,23,24,25,24,25,26,27,28,29,28,29,30,31,32,1];
+  $scope.P = [16,7,20,21,29,12,28,17,1,15,23,26,5,18,31,10,2,8,24,14,32,27,3,9,19,13,30,6,22,11,4,25];
+  $scope.S_BOX = [[[],[],[],[]],[[14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7],[0,15,7,4,14,2,13,1,10,6,12,11,9,5,3,8],[4,1,14,8,13,6,2,11,15,12,9,7,3,10,5,0],[15,12,8,2,4,9,1,7,5,11,3,14,10,0,6,13]],[[15,1,8,14,6,11,3,4,9,7,2,13,12,0,5,10],[3,13,4,7,15,2,8,14,12,0,1,10,6,9,11,5],[0,14,7,11,10,4,13,1,5,8,12,6,9,3,2,15],[13,8,10,1,3,15,4,2,11,6,7,12,0,5,14,9]],[[10,0,9,14,6,3,15,5,1,13,12,7,11,4,2,8],[13,7,0,9,3,4,6,10,2,8,5,14,12,11,15,1],[13,6,4,9,8,15,3,0,11,1,2,12,5,10,14,7],[1,10,13,0,6,9,8,7,4,15,14,3,11,5,2,12]],[[7,13,14,3,0,6,9,10,1,2,8,5,11,12,4,15],[13,8,11,5,6,15,0,3,4,7,2,12,1,10,14,9],[10,6,9,0,12,11,7,13,15,1,3,14,5,2,8,4],[3,15,0,6,10,1,13,8,9,4,5,11,12,7,2,14]],[[2,12,4,1,7,10,11,6,8,5,3,15,13,0,14,9],[14,11,2,12,4,7,13,1,5,0,15,10,3,9,8,6],[4,2,1,11,10,13,7,8,15,9,12,5,6,3,0,14],[11,8,12,7,1,14,2,13,6,15,0,9,10,4,5,3]],[[12,1,10,15,9,2,6,8,0,13,3,4,14,7,5,11],[10,15,4,2,7,12,9,5,6,1,13,14,0,11,3,8],[9,14,15,5,2,8,12,3,7,0,4,10,1,13,11,6],[4,3,2,12,9,5,15,10,11,14,1,7,6,0,8,13]],[[4,11,2,14,15,0,8,13,3,12,9,7,5,10,6,1],[13,0,11,7,4,9,1,10,14,3,5,12,2,15,8,6],[1,4,11,13,12,3,7,14,10,15,6,8,0,5,9,2],[6,11,13,8,1,4,10,7,9,5,0,15,14,2,3,12]],[[13,2,8,4,6,15,11,1,10,9,3,14,5,0,12,7],[1,15,13,8,10,3,7,4,12,5,6,11,0,14,9,2],[7,11,4,1,9,12,14,2,0,6,10,13,15,3,5,8],[2,1,14,7,4,10,8,13,15,12,9,0,3,5,6,11]]];
+  $scope.IP_inv = [40,8,48,16,56,24,64,32,39,7,47,15,55,23,63,31,38,6,46,14,54,22,62,30,37,5,45,13,53,21,61,29,36,4,44,12,52,20,60,28,35,3,43,11,51,19,59,27,34,2,42,10,50,18,58,26,33,1,41,9,49,17,57,25];
+  $scope.initial_permutation = function(p){
+    var c = "";
+    for(var i=0;i<$scope.IP.length;i++)
+      c += p[$scope.IP[i]-1];
+    return c;
+  }
+  $scope.expansion = function(p){
+    var c = "";
+    for(var i=0;i<$scope.E.length;i++)
+      c += p[$scope.E[i]-1];
+    return c;
+  }
+  $scope.s_box = function(p){
+    var c = "";
+    var d = p.match(/.{1,6}/g).join(" ").split(" ");
+    for(var i=0;i<d.length;i++){
+      var row = $scope.binary_2_dec(d[i][0] + d[i][5]);
+      var q = d[i].substr(1,4);
+      var col = $scope.binary_2_dec(q);
+      var x = $scope.dec_2_binary($scope.S_BOX[i+1][row][col],4);
+      c += x;
+    }
+    return c;
+  }
+  $scope.permutation = function(p){
+    var c = "";
+    for(var i=0;i<$scope.P.length;i++)
+      c += p[$scope.P[i]-1];
+    return c;
+  }
+  $scope.fun_F = function(p, key){
+    p = $scope.expansion(p);
+    p = $scope.xor(p,key);
+    p = $scope.s_box(p);
+    p = $scope.permutation(p);
+    return p;
+  }
+  $scope.L_R_swap = function(p){
+    var c = p.substr(32,32);
+    c = c + p.substr(0,32);
+    return c;
+  }
+  $scope.inverse_initial_permutation = function(p){
+    var c = "";
+    for(var i=0;i<$scope.IP_inv.length;i++)
+      c += p[$scope.IP_inv[i]-1];
+    return c;
+  }
+
+  // Main Body
+  $scope.process_key = function(){
+    var key = $scope.hex_2_binary($scope.des_key.toUpperCase());
+    key = $scope.permuted_choice_1(key);
+    $scope.key_space = [""];
+    for(var i=1;i<=$scope.num_of_rounds;i++){
+      key = $scope.left_circular_shift(key, i);
+      $scope.key_space.push($scope.permuted_choice_2(key));
+    }
+  }
+  $scope.encrypt_block = function(plaintext){
+    plaintext = $scope.ascii_2_binary(plaintext);
+    plaintext = $scope.initial_permutation(plaintext);
+    var rnd_text = [plaintext];
+    for(var i=1;i<=$scope.num_of_rounds;i++){
+      var c = plaintext.substr(32,32);
+      var temp = $scope.fun_F(c,$scope.key_space[i]);
+      c += $scope.xor(temp, plaintext.substr(0,32));
+      rnd_text.push(c);
+      plaintext = c;
+    }
+    plaintext = $scope.L_R_swap(plaintext);
+    plaintext = $scope.inverse_initial_permutation(plaintext);
+    $scope.round_text.push(rnd_text);
+    return $scope.binary_2_ascii(plaintext);
+  }
+  $scope.encrypt_des = function(plaintext, key){
+    $scope.process_key();
+    var c = "";
+    $scope.round_text = [];
+    while(plaintext.length%8!=0)plaintext += " ";
+    var d = plaintext.match(/.{1,8}/g).join(" ").split(" ");
+    for(var i=0;i<d.length;i++)
+      c += $scope.encrypt_block(d[i]);
+    return c;
+  }
+
   /* Analysis */
   $scope.r_f_stat = function(p, q){
     var map = {};
@@ -226,8 +419,30 @@ app.controller('PA1_controller',function($scope){
       r_f.push(freq[i]/$scope.reference);
     return r_f;
   }
+  $scope.r_f_stat_des = function(p, q){
+    var map = {};
+    for(var i=0;i<p.length;i++){
+      if(!(p[i] in map))
+        map[p[i]] = 1;
+      else
+        map[p[i]] = map[p[i]] + 1;
+    }
+    for(var i=0;i<256;i++){
+      if(!(String.fromCharCode(i) in map))
+        map[String.fromCharCode(i)] = 0;
+    }
+    var freq = Object.values(map);
+    freq.sort(function(a, b){return a<b;});
+    if(q == 1)
+      $scope.reference_des = freq[0];
+    var r_f = [];
+    for(var i=0;i<freq.length;i++)
+      r_f.push(freq[i]/$scope.reference_des);
+    return r_f;
+  }
   $scope.analysis = function(){
     $scope.r_f_stat_plaintext = $scope.r_f_stat($scope.plaintext, 1);
+    $scope.r_f_stat_plaintext_des = $scope.r_f_stat_des($scope.plaintext_des, 1);
     $scope.r_f_stat_caeser = $scope.r_f_stat($scope.caeser_ciphertext, 0);
     $scope.r_f_stat_vignere = $scope.r_f_stat($scope.vignere_ciphertext, 0);
     $scope.r_f_stat_playfair = $scope.r_f_stat($scope.playfair_ciphertext, 0);
@@ -246,12 +461,44 @@ app.controller('PA1_controller',function($scope){
     }]};
     $scope.lineChartYData=data.yData;
     $scope.lineChartXData=data.xData;
+
+    var final_round_text = [];
+    for(var i=0;i<$scope.round_text[0].length;i++)
+      final_round_text.push("");
+    for(var i=0;i<$scope.round_text.length;i++){
+      for(var j=0;j<$scope.round_text[i].length;j++){
+        final_round_text[j] += $scope.binary_2_ascii($scope.round_text[i][j]);
+      }
+    }
+    var des_rnd_data = [];
+    for(var i=0;i<final_round_text.length;i++)
+      des_rnd_data.push($scope.r_f_stat_des(final_round_text[i],0));
+    var des_y_data = [{
+      "name": "Plaintext",
+      "data":$scope.r_f_stat_plaintext_des
+    }];
+    for(var i=0;i<des_rnd_data.length;i++){
+      des_y_data.push({
+        "name": "Round "+i,
+        "data": des_rnd_data[i]
+      });
+    }
+    des_y_data.push({
+      "name": "Ciphertext",
+      "data": $scope.r_f_stat_des($scope.des_ciphertext, 0)
+    })
+    var des_data = {"xData": [],"yData":des_y_data};
+    $scope.lineChartYData_des=des_data.yData;
+    $scope.lineChartXData_des=des_data.xData;
   }
   
   
   /* Change */
   $scope.plaintext_change = function(){
     $scope.plaintext_err = 0;
+  }
+  $scope.plaintext_des_change = function(){
+    $scope.plaintext_des_err = 0;
   }
   $scope.caeser_key_change = function(){
     $scope.caeser_key_err_1 = 0;
@@ -283,6 +530,7 @@ app.controller('PA1_controller',function($scope){
   /* Form Submit */
   $scope.remove_errors = function(){
     $scope.plaintext_err = 0;
+    $scope.plaintext_des_err = 0;
     $scope.caeser_key_err_1 = 0;
     $scope.caeser_key_err_2 = 0;
     $scope.vignere_key_err_1 = 0;
@@ -317,11 +565,12 @@ app.controller('PA1_controller',function($scope){
   $scope.active = function(){
     var c = 0;
     if($scope.plaintext.length>0)c++;
+    if($scope.plaintext_des.length>0)c++;
     if($scope.caeser_key.length>0)c++;
     if($scope.vignere_key.length>0)c++;
     if($scope.playfair_key.length>0)c++;
     if($scope.des_key.length>0)c++;
-    if(c==5)c=1;
+    if(c==6)c=1;
     else c=0;
     return c;
   }
@@ -329,6 +578,7 @@ app.controller('PA1_controller',function($scope){
     var err = [];
     if(!$scope.active()){
       if($scope.plaintext.length==0)err.push("plaintext_err");
+      if($scope.plaintext_des.length==0)err.push("plaintext_des_err");
       if($scope.caeser_key.length==0)err.push("caeser_key_err_1");
       if($scope.vignere_key.length==0)err.push("vignere_key_err_1");
       if($scope.playfair_key.length==0)err.push("playfair_key_err_1");
@@ -347,19 +597,20 @@ app.controller('PA1_controller',function($scope){
         err.push("playfair_key_err_2");
     }
     if($scope.des_key.length>0){
-      if($scope.check_hex($scope.des_key, 1))
+      if(!$scope.check_hex($scope.des_key, 1))
         err.push("des_key_err_2");
     }
     return err;
   }
   $scope.form_submit = function(){
     var err = $scope.form_validate();
+    console.log(err.length);
     if(err.length == 0){
       $scope.remove_errors();
       $scope.caeser_ciphertext = $scope.encrypt_caesar($scope.plaintext, $scope.caeser_key);
       $scope.vignere_ciphertext = $scope.encrypt_vignere($scope.plaintext, $scope.vignere_key);
       $scope.playfair_ciphertext = $scope.encrypt_playfair($scope.plaintext, $scope.playfair_key);
-      $scope.des_ciphertext = $scope.encrypt_des($scope.plaintext, $scope.des_key);
+      $scope.des_ciphertext = $scope.encrypt_des($scope.plaintext_des);
       $scope.analysis();
       $scope.show_analysis = 1;
     }else{
@@ -453,7 +704,7 @@ app.controller('PA2_controller', function($scope){
     $scope.LCS = [0,1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1];
     $scope.left_circular_shift_util = function(key, k){
       var temp = key.substr(0,k);
-      key = key.substr(k,key.length);
+      key = key.substr(k,key.length-k);
       key += temp;
       return key;
     }
@@ -524,7 +775,7 @@ app.controller('PA2_controller', function($scope){
       return p;
     }
     $scope.L_R_swap = function(p){
-      var c = p.substr(32,64);
+      var c = p.substr(32,32);
       c = c + p.substr(0,32);
       return c;
     }
@@ -564,7 +815,7 @@ app.controller('PA2_controller', function($scope){
       else
         var key_space = $scope.key_2_space;
       for(var i=1;i<=$scope.num_of_rounds;i++){
-        var c = plaintext.substr(32,64);
+        var c = plaintext.substr(32,32);
         var temp = $scope.fun_F(c,key_space[i]);
         c += $scope.xor(temp, plaintext.substr(0,32));
         rnd_text.push(c);
@@ -588,7 +839,7 @@ app.controller('PA2_controller', function($scope){
       else
         var key_space = $scope.key_2_space;
       for(var i=$scope.num_of_rounds;i>=1;i--){
-        var c = ciphertext.substr(32,64);
+        var c = ciphertext.substr(32,32);
         var temp = $scope.fun_F(c,key_space[i]);
         c += $scope.xor(temp, ciphertext.substr(0,32));
         rnd_text.push(c);
@@ -885,8 +1136,9 @@ app.directive('chart', function (){
                     tickInterval:1,
                     title:{
                         text:attrs.xname
-                    }
-                },
+                    },
+                    max: 7
+0                },
                 plotOptions:{
                     lineWidth:0.5
                 },
