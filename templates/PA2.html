@@ -9,56 +9,107 @@
 <!-- Middle content section -->
     <div class="middle">
         <div class="container" ng-controller="PA2_controller">
-            <table>
-                <tr>
-                    <td style="text-align: right;">
-                        <p>Key 1 : </p>
-                    </td>
-                    <td>
-                        <input type="text" ng-model="key_1" ng-change="key_1_change()" placeholder="Key 1" maxlength="8""/>
-                    </td>
-                    <td style="text-align: left;">
-                        <input type="checkbox" ng-model="equal_key" ng-change="equal_key_change()">Equal Keys<br>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>Key 2 : </p>
-                    </td>
-                    <td>
-                        <input type="text" ng-model="key_2" ng-change="key_2_change()" placeholder="Key 2" maxlength="8" ng-disabled="equal_key"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="text-align: right;">
-                        <p>Plaintext 1 : </p>
-                    </td>
-                    <td>
-                        <input type="text" ng-model="plaintext_1" ng-change="plaintext_1_change()" placeholder="Plaintext 1" maxlength="8"/>
-                    </td>
-                    <td style="text-align: left;">
-                        <input type="checkbox" ng-model="equal_plaintext" ng-change="equal_plaintext_change()">Equal Plaintext<br>
-                    </td>
-                    <td style="text-align: right;">
-                        <p>Plaintext 2 : </p>
-                    </td>
-                    <td>
-                        <input type="text" ng-model="plaintext_2" ng-change="plaintext_2_change()" placeholder="Plaintext 2" maxlength="8" ng-disabled="equal_plaintext"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="text-align: right;">
-                        <p>Ciphertext 1 : </p>
-                    </td>
-                    <td>
-                        <input type="text" ng-model="ciphertext_1" ng-change="ciphertext_1_change()" placeholder="Ciphertext 1" maxlength="8"/>
-                    </td>
-                    <td></td>
-                    <td style="text-align: right;">
-                        <p>Ciphertext 2 : </p>
-                    </td>
-                    <td>
-                        <input type="text" ng-model="ciphertext_2" ng-change="ciphertext_2_change()" placeholder="Ciphertext 2" maxlength="8"/>
-                    </td>
-                </tr>
-            </table>
+            <form name="PA2_form" ng-submit="form_submit()">
+                <table>
+                    <tr>
+                        <td style="text-align: right;">
+                            <p>Key 1 : </p>
+                        </td>
+                        <td>
+                            <input type="text" name="key_1" ng-model="key_1" ng-change="key_1_change()" placeholder="Key 1" maxlength="16"/><span class="clear_btn" ng-click="clear('key_1')">C</span>
+                            <span class="warning" ng-show="key_err_1" >Enter 16-character Hex. Key</span>
+                        </td>
+                        <td style="text-align: left;">
+                            <input type="checkbox" ng-model="equal_key" ng-change="equal_key_change()">&nbsp<label>Equal Keys</label><br>
+                        </td>
+                        <td style="text-align: right;">
+                            <p>Key 2 : </p>
+                        </td>
+                        <td>
+                            <input type="text" name="key_2" ng-model="key_2" ng-change="key_2_change()" placeholder="Key 2" maxlength="16"/><span class="clear_btn" ng-click="clear('key_2')">C</span>
+                            <span class="warning" ng-show="key_err_2" >Enter 16-character Hex. Key</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">
+                            <p>Plaintext 1 : </p>
+                        </td>
+                        <td>
+                            <input type="text" name="plaintext_1" ng-model="plaintext_1" ng-change="plaintext_1_change()" placeholder="Plaintext 1"/><span class="clear_btn" ng-click="clear('plaintext_1')">C</span>
+                            <span class="warning" ng-show="p_c_err_1 || p_err_1" >Enter Plaintext in Hex. Form</span>
+                        </td>
+                        <td style="text-align: left;">
+                            <input type="checkbox" ng-model="equal_plaintext" ng-change="equal_plaintext_change()">&nbsp<label>Equal Plaintext</label><br>
+                        </td>
+                        <td style="text-align: right;">
+                            <p>Plaintext 2 : </p>
+                        </td>
+                        <td>
+                            <input type="text" name="plaintext_2" ng-model="plaintext_2" ng-change="plaintext_2_change()" placeholder="Plaintext 2" /><span class="clear_btn" ng-click="clear('plaintext_2')">C</span>
+                            <span class="warning" ng-show="p_c_err_2 || p_err_2" >Enter Plaintext in Hex. Form</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">
+                            <p>Ciphertext 1 : </p>
+                        </td>
+                        <td>
+                            <input type="text" name="ciphertext_1" ng-model="ciphertext_1" ng-change="ciphertext_1_change()" placeholder="Ciphertext 1"/><span class="clear_btn" ng-click="clear('ciphertext_1')">C</span>
+                            <span class="warning" ng-show="p_c_err_1" >Enter Ciphertext in Hex. Form</span>
+                            <span class="warning" ng-show="c_err_1" >Ciphertext Length Must be Multiple of 16</span>
+                        </td>
+                        <td></td>
+                        <td style="text-align: right;">
+                            <p>Ciphertext 2 : </p>
+                        </td>
+                        <td>
+                            <input type="text" name="ciphertext_2" ng-model="ciphertext_2" ng-change="ciphertext_2_change()" placeholder="Ciphertext 2"/><span class="clear_btn" ng-click="clear('ciphertext_2')">C</span>
+                            <span class="warning" ng-show="p_c_err_2" >Enter Ciphertext in Hex. Form</span>
+                            <span class="warning" ng-show="c_err_2" >Ciphertext Length Must be Multiple of 16</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align: center;">
+                            <input type="submit" value="Encrypt / Decrypt">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            <div id="analysis_table" ng-show="show_analysis">
+                <table class="analysis">
+                    <tr>
+                        <th>Round</th>
+                        <th>Left Half</th>
+                        <th>Right Half</th>
+                        <th>Bit Difference</th>
+                        <th>Avalanche Effect(%)</th>
+                    </tr>
+                    <tr>
+                        <td>Plaintext</td>
+                        <td>{{hex_2_binary(plaintext_1).substr(0,32)}}<br>{{hex_2_binary(plaintext_2).substr(0,32)}}</td>
+                        <td>{{hex_2_binary(plaintext_1).substr(32,64)}}<br>{{hex_2_binary(plaintext_2).substr(32,64)}}</td>
+                        <td>{{diff_bits_util(hex_2_binary(plaintext_1),hex_2_binary(plaintext_2))}}</td>
+                        <td>{{diff_bits_util(hex_2_binary(plaintext_1),hex_2_binary(plaintext_2))/64*100 + " %"}}</td>
+                    </tr>
+                    <tr ng-repeat="r in round_no">
+                        <td>{{r}}</td>
+                        <td>{{round_text_1[0][r].substr(0,32)}}<br>{{round_text_2[0][r].substr(0,32)}}</td>
+                        <td>{{round_text_1[0][r].substr(32,64)}}<br>{{round_text_2[0][r].substr(32,64)}}</td>
+                        <td>{{diff_bits[0][r]}}</td>
+                        <td>{{diff_bits[0][r]/64*100 + " %"}}</td>
+                    </tr>
+                    </tr>
+                    <tr>
+                        <td>Ciphertext</td>
+                        <td>{{hex_2_binary(ciphertext_1).substr(0,32)}}<br>{{hex_2_binary(ciphertext_2).substr(0,32)}}</td>
+                        <td>{{hex_2_binary(ciphertext_1).substr(32,64)}}<br>{{hex_2_binary(ciphertext_2).substr(32,64)}}</td>
+                        <td>{{diff_bits_util(hex_2_binary(ciphertext_1),hex_2_binary(ciphertext_2))}}</td>
+                        <td>{{diff_bits_util(hex_2_binary(ciphertext_1),hex_2_binary(ciphertext_2))/64*100 + " %"}}</td>
+                    </tr>
+                </table>
+                <div class="plot">
+                    <chart title="Avalanche Effect" xData="lineChartXData" yData="lineChartYData" xName="Round" yName="Avalanche Effect (%)"></chart>
+                </div>
+            </div>
         </div>
     </div>

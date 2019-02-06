@@ -3,6 +3,9 @@ h1, h2, h3, h4 {
     font-family: 'Lato', sans-serif;
     font-weight: 400;
 }
+body{
+    margin: 0px;
+}
 p {
     font-family: 'Lato', sans-serif;
     margin: 5px;
@@ -11,19 +14,47 @@ p {
 html {
     background-color: #474747;
 }
-input {
+input[type="text"]{
     color: white;
+    background-color: #333333;
     width: auto;
     padding: 5px;
     margin: 3px;
+    border-radius: 0px;
 }
 textarea{
     color: white;
+    background-color: #333333;
     width: 95%;
     height: 150px;
     padding: 12px;
     margin: 3px;
 }
+
+input[type="submit"] {
+  padding: 10px;
+  color: white;
+  background-color: #333;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+input[type="submit"]:hover {
+  background: green;
+  font-weight: 1500;
+  margin-top: -2px;
+  margin-left: 0px;
+  transform: scale(1.2,1.2);
+  -ms-transform: scale(1.2,1.2);
+  -webkit-transform: scale(1.2,1.2);
+  box-shadow: 0px 5px 5px -2px rgba(0, 0, 0, 0.25);
+}
+
+input[type="checkbox"]:checked + label{
+    color: #0d5;
+}
+
 table{
     width: 95%;
     margin: 20px;
@@ -123,4 +154,40 @@ td{
 .content p {
     line-height: 30px;
     font-size: 16px;
+}
+.warning{
+    color: red;
+    font-style: italic;
+    font-size: 10px;
+}
+.clear_btn{
+    color: #ffffff;
+    background: #822;
+    padding: 9px;
+    margin: -4px;
+    text-align: center;
+    cursor: pointer;
+}
+
+#analysis_table {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+#analysis_table td, #analysis_table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+#analysis_table td:first-child{
+    font-weight: bold;
+}
+#analysis_table tr:nth-child(even){background-color: #f2f2f2;}
+#analysis_table tr:hover {background-color: #ddd;}
+#analysis_table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #007299;
+  color: white;
 }
