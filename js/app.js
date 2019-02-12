@@ -477,7 +477,7 @@ app.controller('PA1_controller',function($scope){
       "name": "Plaintext",
       "data":$scope.r_f_stat_plaintext_des
     }];
-    for(var i=0;i<des_rnd_data.length;i++){
+    for(var i=4;i<des_rnd_data.length;i+=4){
       des_y_data.push({
         "name": "Round "+i,
         "data": des_rnd_data[i]
@@ -604,7 +604,6 @@ app.controller('PA1_controller',function($scope){
   }
   $scope.form_submit = function(){
     var err = $scope.form_validate();
-    console.log(err.length);
     if(err.length == 0){
       $scope.remove_errors();
       $scope.caeser_ciphertext = $scope.encrypt_caesar($scope.plaintext, $scope.caeser_key);
@@ -1037,6 +1036,7 @@ app.controller('PA2_controller', function($scope){
       return err;
     }
     $scope.show_errors = function(err){
+      $scope.show_analysis = 0;
       for(var i=0;i<err.length;i++){
         if(err[i] == "key_err_1")
           $scope.key_err_1 = 1;
@@ -1136,9 +1136,8 @@ app.directive('chart', function (){
                     tickInterval:1,
                     title:{
                         text:attrs.xname
-                    },
-                    max: 7
-0                },
+                    }
+                },
                 plotOptions:{
                     lineWidth:0.5
                 },
