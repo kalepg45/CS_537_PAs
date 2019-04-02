@@ -1,5 +1,6 @@
 import datetime
 import time
+from scipy.stats import chi2
 from des_3 import *
 
 def time_fun():
@@ -53,7 +54,7 @@ def chi_square_test(f,n):
         if act < 5:
             print('1')
         D += ((act - exp)**2) / exp
-    if D < 293.24784: #value of chi_sq(255) from chi-dist table
+    if D < chi2.ppf(1-0.05, 255):
         print("Chi-Suare Test Passed")
     else:
         print("Chi-Suare Test Failed")
@@ -70,7 +71,7 @@ def kolmogorov_smirnov_test(f,n):
         P = max(P, (i+1)/256 - f[i])
         N = max(N, f[i] - i/256)
     D = max(P,N)
-    if D<0.08488125: #value of D(29) for 5% confidence
+    if D < 0.08488125: #value of D(29) for 5% confidence
         print("Kolmogorov-Smirnov Test Passed")
     else:
         print("Kolmogorov-Smirnov Test Failed")

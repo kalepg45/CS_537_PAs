@@ -5,7 +5,6 @@ def etf(n):
 	phi = []
 	for i in range(n+1):
 		phi.append(i)
-	phi[1] = 0
 	for p in range(2,n+1):
 		if phi[p]==p:
 			phi[p] = p-1

@@ -25,7 +25,7 @@ def chi_square_test(f,n,m):
 def spectral_test(m,a,c):
     x=[i for i in range(m)]
     y=[(a*i+c)%m for i in range(m)]
-    plt.scatter(x,y,s=5)
+    plt.scatter(x,y,s=8)
     plt.title("Spectral test for LCG")
     plt.xlabel("x(n-1)")
     plt.ylabel("x(n)")
@@ -47,7 +47,7 @@ def kolmogorov_smirnov_test(l,n,m):
             P = max(P, i/(m-1) - f[i])
             N = max(N, f[i] - (i-1)/(m-1))
     D = max(P,N)
-    if D<0.23: # value of D(29) for 5% confidence
+    if D < 0.23: # value of D(29) for 5% confidence
         print("Kolmogorov-Smirnov Test Passed")
     else:
         print("Kolmogorov-Smirnov Test Failed")
